@@ -1,1 +1,1 @@
-from partsy.partsy import *
+from .partsy import *

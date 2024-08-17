@@ -1,11 +1,14 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
+#include "particle_manager.h"
+
 static PyObject*
 partsy_init(PyObject* self, PyObject* args) {
 
     printf("PartSy 0.0.1v is initialized\n");
 
+    Py_INCREF(Py_None);
     return Py_None;
 }
 
