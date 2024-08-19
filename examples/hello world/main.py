@@ -1,10 +1,8 @@
 import pygame
-import partsy
 
 
 def main() -> None:
-    partsy.init()
-
+    pass
 
 if __name__ == "__main__":
     pygame.init()

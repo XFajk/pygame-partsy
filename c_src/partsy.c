@@ -1,8 +1,6 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
-#include "particle_manager.h"
-
 static PyObject*
 partsy_init(PyObject* self, PyObject* args) {
 
