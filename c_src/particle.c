@@ -1,5 +1,6 @@
 #include <Python.h>
 
+#include "abstract.h"
 #include "include/partsy.h"
 
 /*
@@ -178,10 +179,10 @@ Particle_new(PyTypeObject *type, PyObject *args, PyObject *kwargs) {
     Particle* self = PS_BASIC_ALLOC_SELF(type, Particle*);
 
     if (self != NULL) {
-        self->position = Py_BuildValue("(ff)", 0.f, 0.f);
-        self->velocity = Py_BuildValue("(ff)", 0.f, 0.f);
-        self->acceleration = Py_BuildValue("(ff)", 0.f, 0.f);
-        self->scale = Py_BuildValue("(ff)", 1.f, 1.f);
+        self->position = Py_BuildValue("[ff]", 0.f, 0.f);
+        self->velocity = Py_BuildValue("[ff]", 0.f, 0.f);
+        self->acceleration = Py_BuildValue("[ff]", 0.f, 0.f);
+        self->scale = Py_BuildValue("[ff]", 1.f, 1.f);
 
         self->upForDeletion = false;
     }
