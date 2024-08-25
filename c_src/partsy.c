@@ -1,29 +1,44 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
+#include "include/partsy.h"
+
 static PyObject*
 partsy_init(PyObject* self, PyObject* args) {
 
     printf("PartSy 0.0.1v is initialized\n");
 
-    Py_INCREF(Py_None);
-    return Py_None;
+    Py_RETURN_NONE;
 }
 
 static PyMethodDef partsy_methods[] = {
-    {"init", partsy_init, METH_VARARGS, "a simple function to check if the module is working"},
+    {"init", (PyCFunction)partsy_init, METH_VARARGS, "a simple function to check if the module is working"},
     {NULL, NULL, 0, NULL}
 };
 
 static struct PyModuleDef patsy_module = {
-    PyModuleDef_HEAD_INIT,
-    "partsy",
-    NULL,
+    .m_base = PyModuleDef_HEAD_INIT,
+    .m_name = "partsy",
+    "this C extension for python brings a blazingly fast and customizable particle system to pygame developers",
     -1,
     partsy_methods
 };
 
 PyMODINIT_FUNC
 PyInit_partsy(void) {
-    return PyModule_Create(&patsy_module);
+    PyObject *m;
+    if (PyType_Ready(&ParticleType) < 0) {
+        return NULL;
+    }
+
+    m = PyModule_Create(&patsy_module);
+    if (m == NULL)
+        return NULL;
+
+    if (PyModule_AddObjectRef(m, "Particle", (PyObject *) &ParticleType) < 0) {
+         Py_DECREF(m);
+         return NULL;
+     }
+
+    return m;
 }

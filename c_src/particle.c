@@ -29,21 +29,154 @@ Particle_getAcceleration(Particle *self, void* _closure);
 static int
 Particle_setAcceleration(Particle *self, PyObject* value, void* _closure);
 
-static PyObject*
-Particle_addToVelocity(Particle *self, PyObject *args, PyObject *kwargs);
-static PyObject*
-Particle_addToAcceleration(Particle *self, PyObject *args, PyObject *kwargs);
-static PyObject*
-Particle_addToScale(Particle *self, PyObject *args, PyObject *kwargs);
 
+// C API functions
+int
+_particle_set_position(Particle* self, PyObject* new_position) {
+    if (new_position == NULL) {
+        PyErr_SetString(PyExc_ValueError, "there was no value provided for the Particle().position feild");
+        return -1;
+    }
+    if (!PySequence_Check(new_position) || PySequence_Length(new_position) < 2) {
+        PyErr_SetString(PyExc_TypeError, "the value provided for the Particle().position feild is not indexable or it's length is smaller then 2");
+        return -1;
+    }
+
+    PyObject* value_x = PySequence_GetItem(new_position,  0);
+    PyObject* value_y = PySequence_GetItem(new_position,  1);
+
+    if (!PyNumber_Check(value_x)) {
+        PyErr_SetString(PyExc_TypeError, "the first value of the sequence is not a number");
+        return -1;
+    }
+    if (!PyNumber_Check(value_y)) {
+        PyErr_SetString(PyExc_TypeError, "the first second of the sequence is not a number");
+        return -1;
+    }
+
+    Py_DECREF(value_x);
+    Py_DECREF(value_y);
+
+    Py_XDECREF(self->position); // unrefencing the old value so the feild dosent own it anymore
+    Py_INCREF(new_position);
+    self->position = new_position; // transfer owner ship from the argument
+    return 0;
+}
+
+int
+_particle_set_scale(Particle* self, PyObject* new_scale) {
+    if (new_scale == NULL) {
+        PyErr_SetString(PyExc_ValueError, "there was no value provided for the Particle().velocity feild");
+        return -1;
+    }
+    if (!PySequence_Check(new_scale) || PySequence_Length(new_scale) < 2) {
+        PyErr_SetString(PyExc_TypeError, "the value provided for the Particle().velocity feild is not indexable or it's length is smaller then 2");
+        return -1;
+    }
+
+    PyObject* value_x = PySequence_GetItem(new_scale,  0);
+    PyObject* value_y = PySequence_GetItem(new_scale,  1);
+
+    if (!PyNumber_Check(value_x)) {
+        PyErr_SetString(PyExc_TypeError, "the first value of the sequence is not a number");
+        return -1;
+    }
+    if (!PyNumber_Check(value_y)) {
+        PyErr_SetString(PyExc_TypeError, "the first second of the sequence is not a number");
+        return -1;
+    }
+
+    Py_DECREF(value_x);
+    Py_DECREF(value_y);
+
+    Py_XDECREF(self->scale); // unrefencing the old value so the feild dosent own it anymore
+    Py_INCREF(new_scale);
+    self->scale = new_scale; // transfer owner ship from the argument
+    return 0;
+}
+
+int
+_particle_set_velocity(Particle* self, PyObject* new_velocity) {
+    if (new_velocity == NULL) {
+        PyErr_SetString(PyExc_ValueError, "there was no value provided for the Particle().velocity feild");
+        return -1;
+    }
+    if (!PySequence_Check(new_velocity) || PySequence_Length(new_velocity) < 2) {
+        PyErr_SetString(PyExc_TypeError, "the value provided for the Particle().velocity feild is not indexable or it's length is smaller then 2");
+        return -1;
+    }
+
+    PyObject* value_x = PySequence_GetItem(new_velocity,  0);
+    PyObject* value_y = PySequence_GetItem(new_velocity,  1);
+
+    if (!PyNumber_Check(value_x)) {
+        PyErr_SetString(PyExc_TypeError, "the first value of the sequence is not a number");
+        return -1;
+    }
+    if (!PyNumber_Check(value_y)) {
+        PyErr_SetString(PyExc_TypeError, "the first second of the sequence is not a number");
+        return -1;
+    }
+
+    Py_DECREF(value_x);
+    Py_DECREF(value_y);
+
+    Py_XDECREF(self->velocity); // unrefencing the old value so the feild dosent own it anymore
+    Py_INCREF(new_velocity);
+    self->velocity = new_velocity; // transfer owner ship from the argument
+    return 0;
+}
+
+int
+_particle_set_acceleration(Particle* self, PyObject* new_acceleration) {
+    if (new_acceleration == NULL) {
+        PyErr_SetString(PyExc_ValueError, "there was no value provided for the Particle().velocity feild");
+        return -1;
+    }
+    if (!PySequence_Check(new_acceleration) || PySequence_Length(new_acceleration) < 2) {
+        PyErr_SetString(PyExc_TypeError, "the value provided for the Particle().velocity feild is not indexable or it's length is smaller then 2");
+        return -1;
+    }
+
+    PyObject* value_x = PySequence_GetItem(new_acceleration,  0);
+    PyObject* value_y = PySequence_GetItem(new_acceleration,  1);
+
+    if (!PyNumber_Check(value_x)) {
+        PyErr_SetString(PyExc_TypeError, "the first value of the sequence is not a number");
+        return -1;
+    }
+    if (!PyNumber_Check(value_y)) {
+        PyErr_SetString(PyExc_TypeError, "the first second of the sequence is not a number");
+        return -1;
+    }
+
+    Py_DECREF(value_x);
+    Py_DECREF(value_y);
+
+    Py_XDECREF(self->acceleration); // unrefencing the old value so the feild dosent own it anymore
+    Py_INCREF(new_acceleration);
+    self->acceleration = new_acceleration; // transfer owner ship from the argument
+    return 0;
+}
+
+
+// Python API functions
 static void
 Particle_dealloc(Particle *self) {
-    DEALLOC_SELF(self);
+
+    Py_XDECREF(self->position);
+    Py_XDECREF(self->scale);
+    Py_XDECREF(self->velocity);
+    Py_XDECREF(self->acceleration);
+
+    PS_DEALLOC_SELF(self);
 }
 
 static PyObject*
 Particle_new(PyTypeObject *type, PyObject *args, PyObject *kwargs) {
-    Particle* self = BASIC_ALLOC_SELF(type, Particle*);
+
+    Particle* self = PS_BASIC_ALLOC_SELF(type, Particle*);
+
     if (self != NULL) {
         self->position = Py_BuildValue("(ff)", 0.f, 0.f);
         self->velocity = Py_BuildValue("(ff)", 0.f, 0.f);
@@ -52,6 +185,7 @@ Particle_new(PyTypeObject *type, PyObject *args, PyObject *kwargs) {
 
         self->upForDeletion = false;
     }
+
     return (PyObject*)self;
 }
 
@@ -67,49 +201,23 @@ Particle_init(Particle *self, PyObject* args, PyObject* kwargs) {
         NULL // sentinel
     };
 
-    PyObject *scale, *position, *velocity, *acceleration;
-    float rotationalVelocity = 0.f, rotationalAcceleration = 0.f;
-
+    PyObject *scale = NULL, *position = NULL, *velocity = NULL, *acceleration = NULL;
     if (!PyArg_ParseTupleAndKeywords(
         args, kwargs, "O|OOOff", kwlist,
         &position,
         &scale,
         &velocity,
         &acceleration,
-        &rotationalVelocity,
-        &rotationalAcceleration
-    )) return -1;
-
-    if (!PySequence_Check(position) || PySequence_Length(position) < 2) {
-        PyErr_SetString(PyExc_TypeError, "the position argument must be indexable and musth have a lenght of 2");
-        return -1;
-    }
-    if ((!PySequence_Check(scale) || PySequence_Length(scale) < 2) && scale != NULL) { // the null check is here because scale is optional
-        PyErr_SetString(PyExc_TypeError, "the scale argument must be indexable and musth have a lenght of 2");
-        return -1;
-    }
-    if ((!PySequence_Check(velocity) || PySequence_Length(velocity) < 2) && velocity != NULL) { // the null check is here because scale is optional
-        PyErr_SetString(PyExc_TypeError, "the velocity argument must be indexable and musth have a lenght of 2");
-        return -1;
-    }
-    if ((!PySequence_Check(acceleration) || PySequence_Length(acceleration) < 2) && acceleration != NULL) { // the null check is here because scale is optional
-        PyErr_SetString(PyExc_TypeError, "the acceleration argument must be indexable and musth have a lenght of 2");
+        &self->rotationalVelocity,
+        &self->rotationalAcceleration
+    )) {
         return -1;
     }
 
-    // deleting the values that where set in the new function
-    Py_XDECREF(self->position);
-    Py_XDECREF(self->scale);
-    Py_XDECREF(self->velocity);
-    Py_XDECREF(self->acceleration);
-
-    // transfering ownership from the local temporary variables to the objects feilds
-    self->position = position;
-    self->scale = scale;
-    self->velocity = velocity;
-    self->acceleration = acceleration;
-    self->rotationalVelocity = rotationalVelocity;
-    self->rotationalAcceleration = rotationalAcceleration;
+    _particle_set_position(self, position);
+    _particle_set_scale(self, scale);
+    _particle_set_velocity(self, velocity);
+    _particle_set_acceleration(self, acceleration);
 
     return 0;
 }
@@ -122,19 +230,7 @@ Particle_getPosition(Particle *self, void* _closure) {
 
 static int
 Particle_setPosition(Particle *self, PyObject *value, void* _closure) {
-    if (value == NULL) {
-        PyErr_SetString(PyExc_ValueError, "there was no value provided for the Particle().position feild");
-        return -1;
-    }
-    if (!PySequence_Check(value) || PySequence_Length(value) < 2) {
-        PyErr_SetString(PyExc_TypeError, "the value provided for the Particle().position feild is not indexable or it's length is smaller then 2");
-        return -1;
-    }
-
-    Py_XDECREF(self->position); // unrefencing the old value so the feild dosent own it anymore
-    Py_INCREF(value);
-    self->position = value; // transfer owner ship from the argument
-    return 0;
+    return _particle_set_position(self, value);
 }
 
 static PyObject*
@@ -145,19 +241,7 @@ Particle_getScale(Particle *self, void* _closure) {
 
 static int
 Particle_setScale(Particle *self, PyObject *value, void* _closure) {
-    if (value == NULL) {
-        PyErr_SetString(PyExc_ValueError, "there was no value provided for the Particle().scael feild");
-        return -1;
-    }
-    if (!PySequence_Check(value) || PySequence_Length(value) < 2) {
-        PyErr_SetString(PyExc_TypeError, "the value provided for the Particle().scale feild is not indexable or it's length is smaller then 2");
-        return -1;
-    }
-
-    Py_XDECREF(self->scale); // unrefencing the old value so the feild dosent own it anymore
-    Py_INCREF(value);
-    self->scale = value; // transfer owner ship from the argument
-    return 0;
+    return _particle_set_scale(self, value);
 }
 
 static PyObject*
@@ -168,19 +252,7 @@ Particle_getVelocity(Particle *self, void* _closure) {
 
 static int
 Particle_setVelocity(Particle *self, PyObject* value, void* _closure) {
-    if (value == NULL) {
-        PyErr_SetString(PyExc_ValueError, "there was no value provided for the Particle().velocity feild");
-        return -1;
-    }
-    if (!PySequence_Check(value) || PySequence_Length(value) < 2) {
-        PyErr_SetString(PyExc_TypeError, "the value provided for the Particle().velocity feild is not indexable or it's length is smaller then 2");
-        return -1;
-    }
-
-    Py_XDECREF(self->velocity); // unrefencing the old value so the feild dosent own it anymore
-    Py_INCREF(value);
-    self->velocity = value; // transfer owner ship from the argument
-    return 0;
+    return _particle_set_velocity(self, value);
 }
 
 static PyObject*
@@ -191,49 +263,7 @@ Particle_getAcceleration(Particle *self, void* _closure) {
 
 static int
 Particle_setAcceleration(Particle *self, PyObject *value, void* _closure) {
-    if (value == NULL) {
-        PyErr_SetString(PyExc_ValueError, "there was no value provided for the Particle().acceleration feild");
-        return -1;
-    }
-    if (!PySequence_Check(value) || PySequence_Length(value) < 2) {
-        PyErr_SetString(PyExc_TypeError, "the value provided for the Particle().acceleration feild is not indexable or it's length is smaller then 2");
-        return -1;
-    }
-
-    Py_XDECREF(self->acceleration); // unrefencing the old value so the feild dosent own it anymore
-    Py_INCREF(value);
-    self->acceleration = value; // transfer owner ship from the argument
-    return 0;
-}
-
-// TODO: add more argument configurations like [ff]
-static PyObject*
-Particle_addToVelocity(Particle* self, PyObject* args, PyObject* kwargs) {
-    static char* kwlist[] = {"vec", NULL};
-    float x, y;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O", kwlist, &x, &y)) return NULL;
-
-    Py_RETURN_NONE;
-}
-
-
-static PyObject*
-Particle_addToAcceleration(Particle* self, PyObject* args, PyObject* kwargs) {
-    static char* kwlist[] = {"vec", NULL};
-    float x, y;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O", kwlist, &x, &y)) return NULL;
-
-    Py_RETURN_NONE;
-}
-
-
-static PyObject*
-Particle_addToScale(Particle* self, PyObject* args, PyObject* kwargs) {
-    static char* kwlist[] = {"vec", NULL};
-    PyObject* tmp;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O", kwlist, &tmp)) return NULL;
-
-    Py_RETURN_NONE;
+    return _particle_set_acceleration(self, value);
 }
 
 
@@ -252,10 +282,17 @@ static PyMemberDef Particle_members[] = {
     {NULL}
 };
 
-static PyMethodDef Particle_methods[] = {
-
-};
 
 PyTypeObject ParticleType = {
-
+    .ob_base =PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "partsy.Particle",
+    .tp_basicsize = sizeof(Particle),
+    .tp_itemsize = 0,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
+    .tp_doc = "partsy.Particle is a class that repsents a particle it holds everything that a particle should",
+    .tp_new = Particle_new,
+    .tp_init = (initproc)Particle_init,
+    .tp_dealloc = (destructor)Particle_dealloc,
+    .tp_members = Particle_members,
+    .tp_getset = Particle_getsetters,
 };

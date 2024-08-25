@@ -5,3 +5,4 @@ partsy.egg-info
 poetry.lock
 build
 dist
+.idea

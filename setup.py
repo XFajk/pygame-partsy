@@ -2,7 +2,7 @@ from setuptools import setup, Extension
 
 module = Extension(
     'partsy',
-    sources=['c_src/partsy.c']
+    sources=['c_src/partsy.c', "c_src/particle.c"]
 )
 
 setup(
@@ -12,5 +12,5 @@ setup(
     ext_modules=[module],
     package_dir={'': 'py_src/partsy'},
     packages=['.'],
-    package_data={'partsy': ['partsy.pyi']}
+    package_data={'partsy': ['partsy.pyi', 'particle.pyi']}
 )
