@@ -27,18 +27,27 @@ static struct PyModuleDef patsy_module = {
 PyMODINIT_FUNC
 PyInit_partsy(void) {
     PyObject *m;
-    if (PyType_Ready(&ParticleType) < 0) {
+
+    if (PyType_Ready(&ParticleType) < 0)
         return NULL;
-    }
+
+    if (PyType_Ready(&ParticleNodeType) < 0)
+        return NULL;
+
 
     m = PyModule_Create(&patsy_module);
     if (m == NULL)
         return NULL;
 
-    if (PyModule_AddObjectRef(m, "Particle", (PyObject *) &ParticleType) < 0) {
+    if (PyModule_AddObjectRef(m, "Particle", (PyObject *)&ParticleType) < 0) {
          Py_DECREF(m);
          return NULL;
-     }
+    }
+
+    if (PyModule_AddObjectRef(m, "ParticleNode", (PyObject *)&ParticleNodeType) < 0) {
+        Py_DECREF(m);
+        return NULL;
+    }
 
     return m;
 }

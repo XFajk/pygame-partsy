@@ -1,6 +1,5 @@
 #include <Python.h>
 
-#include "abstract.h"
 #include "include/partsy.h"
 
 /*
@@ -13,18 +12,22 @@ Particle_new(PyTypeObject *type, PyObject *args, PyObject *kwargs);
 static int
 Particle_init(Particle *self, PyObject *args, PyObject *kwargs);
 
+
 static PyObject*
 Particle_getPosition(Particle *self, void* _closure);
 static int
 Particle_setPosition(Particle *self, PyObject* value, void* _closure);
+
 static PyObject*
 Particle_getScale(Particle *self, void* _closure);
 static int
 Particle_setScale(Particle *self, PyObject* value, void* _closure);
+
 static PyObject*
 Particle_getVelocity(Particle *self, void* _closure);
 static int
 Particle_setVelocity(Particle *self, PyObject* value, void* _closure);
+
 static PyObject*
 Particle_getAcceleration(Particle *self, void* _closure);
 static int
@@ -35,7 +38,7 @@ Particle_setAcceleration(Particle *self, PyObject* value, void* _closure);
 int
 _particle_set_position(Particle* self, PyObject* new_position) {
     if (new_position == NULL) {
-        PyErr_SetString(PyExc_ValueError, "there was no value provided for the Particle().position feild");
+        PyErr_SetString(PyExc_MemoryError, "the value provided to Particle.position was NULL");
         return -1;
     }
     if (!PySequence_Check(new_position) || PySequence_Length(new_position) < 2) {
@@ -43,20 +46,20 @@ _particle_set_position(Particle* self, PyObject* new_position) {
         return -1;
     }
 
-    PyObject* value_x = PySequence_GetItem(new_position,  0);
-    PyObject* value_y = PySequence_GetItem(new_position,  1);
+    PyObject* valueX = PySequence_GetItem(new_position,  0);
+    PyObject* valueY = PySequence_GetItem(new_position,  1);
 
-    if (!PyNumber_Check(value_x)) {
+    if (!PyNumber_Check(valueX)) {
         PyErr_SetString(PyExc_TypeError, "the first value of the sequence is not a number");
         return -1;
     }
-    if (!PyNumber_Check(value_y)) {
+    if (!PyNumber_Check(valueY)) {
         PyErr_SetString(PyExc_TypeError, "the first second of the sequence is not a number");
         return -1;
     }
 
-    Py_DECREF(value_x);
-    Py_DECREF(value_y);
+    Py_DECREF(valueX);
+    Py_DECREF(valueY);
 
     Py_XDECREF(self->position); // unrefencing the old value so the feild dosent own it anymore
     Py_INCREF(new_position);
@@ -67,7 +70,7 @@ _particle_set_position(Particle* self, PyObject* new_position) {
 int
 _particle_set_scale(Particle* self, PyObject* new_scale) {
     if (new_scale == NULL) {
-        PyErr_SetString(PyExc_ValueError, "there was no value provided for the Particle().velocity feild");
+        PyErr_SetString(PyExc_MemoryError, "the value provided to Particle.scale was NULL");
         return -1;
     }
     if (!PySequence_Check(new_scale) || PySequence_Length(new_scale) < 2) {
@@ -75,20 +78,20 @@ _particle_set_scale(Particle* self, PyObject* new_scale) {
         return -1;
     }
 
-    PyObject* value_x = PySequence_GetItem(new_scale,  0);
-    PyObject* value_y = PySequence_GetItem(new_scale,  1);
+    PyObject* valueX = PySequence_GetItem(new_scale,  0);
+    PyObject* valueY = PySequence_GetItem(new_scale,  1);
 
-    if (!PyNumber_Check(value_x)) {
+    if (!PyNumber_Check(valueX)) {
         PyErr_SetString(PyExc_TypeError, "the first value of the sequence is not a number");
         return -1;
     }
-    if (!PyNumber_Check(value_y)) {
+    if (!PyNumber_Check(valueY)) {
         PyErr_SetString(PyExc_TypeError, "the first second of the sequence is not a number");
         return -1;
     }
 
-    Py_DECREF(value_x);
-    Py_DECREF(value_y);
+    Py_DECREF(valueX);
+    Py_DECREF(valueY);
 
     Py_XDECREF(self->scale); // unrefencing the old value so the feild dosent own it anymore
     Py_INCREF(new_scale);
@@ -99,7 +102,7 @@ _particle_set_scale(Particle* self, PyObject* new_scale) {
 int
 _particle_set_velocity(Particle* self, PyObject* new_velocity) {
     if (new_velocity == NULL) {
-        PyErr_SetString(PyExc_ValueError, "there was no value provided for the Particle().velocity feild");
+        PyErr_SetString(PyExc_MemoryError, "the value provided to Particle.velocity was NULL");
         return -1;
     }
     if (!PySequence_Check(new_velocity) || PySequence_Length(new_velocity) < 2) {
@@ -107,20 +110,20 @@ _particle_set_velocity(Particle* self, PyObject* new_velocity) {
         return -1;
     }
 
-    PyObject* value_x = PySequence_GetItem(new_velocity,  0);
-    PyObject* value_y = PySequence_GetItem(new_velocity,  1);
+    PyObject* valueX = PySequence_GetItem(new_velocity,  0);
+    PyObject* valueY = PySequence_GetItem(new_velocity,  1);
 
-    if (!PyNumber_Check(value_x)) {
+    if (!PyNumber_Check(valueX)) {
         PyErr_SetString(PyExc_TypeError, "the first value of the sequence is not a number");
         return -1;
     }
-    if (!PyNumber_Check(value_y)) {
+    if (!PyNumber_Check(valueY)) {
         PyErr_SetString(PyExc_TypeError, "the first second of the sequence is not a number");
         return -1;
     }
 
-    Py_DECREF(value_x);
-    Py_DECREF(value_y);
+    Py_DECREF(valueX);
+    Py_DECREF(valueY);
 
     Py_XDECREF(self->velocity); // unrefencing the old value so the feild dosent own it anymore
     Py_INCREF(new_velocity);
@@ -131,28 +134,28 @@ _particle_set_velocity(Particle* self, PyObject* new_velocity) {
 int
 _particle_set_acceleration(Particle* self, PyObject* new_acceleration) {
     if (new_acceleration == NULL) {
-        PyErr_SetString(PyExc_ValueError, "there was no value provided for the Particle().velocity feild");
+        PyErr_SetString(PyExc_MemoryError, "the value provided to Particle.acceleration was NULL");
         return -1;
     }
     if (!PySequence_Check(new_acceleration) || PySequence_Length(new_acceleration) < 2) {
-        PyErr_SetString(PyExc_TypeError, "the value provided for the Particle().velocity feild is not indexable or it's length is smaller then 2");
+        PyErr_SetString(PyExc_TypeError, "the value provided for the Particle().acceleration feild is not indexable or it's length is smaller then 2");
         return -1;
     }
 
-    PyObject* value_x = PySequence_GetItem(new_acceleration,  0);
-    PyObject* value_y = PySequence_GetItem(new_acceleration,  1);
+    PyObject* valueX = PySequence_GetItem(new_acceleration,  0);
+    PyObject* valueY = PySequence_GetItem(new_acceleration,  1);
 
-    if (!PyNumber_Check(value_x)) {
+    if (!PyNumber_Check(valueX)) {
         PyErr_SetString(PyExc_TypeError, "the first value of the sequence is not a number");
         return -1;
     }
-    if (!PyNumber_Check(value_y)) {
+    if (!PyNumber_Check(valueY)) {
         PyErr_SetString(PyExc_TypeError, "the first second of the sequence is not a number");
         return -1;
     }
 
-    Py_DECREF(value_x);
-    Py_DECREF(value_y);
+    Py_DECREF(valueX);
+    Py_DECREF(valueY);
 
     Py_XDECREF(self->acceleration); // unrefencing the old value so the feild dosent own it anymore
     Py_INCREF(new_acceleration);
@@ -164,7 +167,6 @@ _particle_set_acceleration(Particle* self, PyObject* new_acceleration) {
 // Python API functions
 static void
 Particle_dealloc(Particle *self) {
-
     Py_XDECREF(self->position);
     Py_XDECREF(self->scale);
     Py_XDECREF(self->velocity);
@@ -185,9 +187,13 @@ Particle_new(PyTypeObject *type, PyObject *args, PyObject *kwargs) {
         self->scale = Py_BuildValue("[ff]", 1.f, 1.f);
 
         self->upForDeletion = false;
+    } else {
+        PyErr_SetString(PyExc_MemoryError, "failed to allocate memory for particle");
+        return NULL;
     }
 
-    return (PyObject*)self;
+    return (PyObject *)self;
+
 }
 
 static int
@@ -212,13 +218,25 @@ Particle_init(Particle *self, PyObject* args, PyObject* kwargs) {
         &self->rotationalVelocity,
         &self->rotationalAcceleration
     )) {
+        PyErr_SetString(PyExc_ValueError, "parsing arguments in the Particle.__init__ function failed");
         return -1;
     }
 
+    // TODO: error handeling on these functions maybe if needed reasearch that
     _particle_set_position(self, position);
-    _particle_set_scale(self, scale);
-    _particle_set_velocity(self, velocity);
-    _particle_set_acceleration(self, acceleration);
+
+    // the reason for these NULL check is because the scale velocity and acceleration feilds are
+    // optional and if we didnt do this check the _particle_set_... functions would thorow and exception
+    // becasue you can't pass a NULL value to a setter
+    if (scale != NULL) {
+        _particle_set_scale(self, scale);
+    }
+    if (velocity != NULL) {
+        _particle_set_velocity(self, velocity);
+    }
+    if (acceleration != NULL) {
+        _particle_set_acceleration(self, acceleration);
+    }
 
     return 0;
 }
@@ -277,8 +295,8 @@ static PyGetSetDef Particle_getsetters[] = {
 };
 
 static PyMemberDef Particle_members[] = {
-    {"rot_velocity", Py_T_FLOAT, offsetof(Particle, rotationalVelocity), 0, "rotational velocity of the particle describes how does the particel rotate"},
-    {"rot_acceleration", Py_T_FLOAT, offsetof(Particle, rotationalAcceleration), 0, "rotational acceleration of the particle describes how does the particle velocity change"},
+    {"rotational_velocity", Py_T_FLOAT, offsetof(Particle, rotationalVelocity), 0, "rotational velocity of the particle describes how does the particel rotate"},
+    {"rotational_acceleration", Py_T_FLOAT, offsetof(Particle, rotationalAcceleration), 0, "rotational acceleration of the particle describes how does the particle velocity change"},
     {"delete", Py_T_FLOAT, offsetof(Particle, upForDeletion), 0, "this bool determines if the Particle is going to be deleted or not"},
     {NULL}
 };

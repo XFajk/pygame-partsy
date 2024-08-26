@@ -1,22 +1,49 @@
 import pygame
 import partsy
-import sys
+import random as rnd
 
-def foo(l):
-    print(sys.getrefcount(l))
+def print_particle(p: partsy.Particle) -> None:
+    if p is not None:
+        print(f"particle position: {p.position}")
+        print(f"particle scale: {p.scale}")
+        print(f"particle velocity: {p.velocity}")
+        print(f"particle acceleration: {p.acceleration}")
+        print(f"particle rotational velocity: {p.rotational_velocity}")
+        print(f"particle rotational acceleration {p.rotational_acceleration}")
+        print("")
 
 def main() -> None:
 
     partsy.init()
 
-    vec = pygame.Vector2()
+    last_node: partsy.ParticleNode = partsy.ParticleNode()
+    for i in range(3):
+        particle_setup = {
+            "position": (rnd.randint(-100, 100), rnd.randint(-100, 100)),
+            "scale": (rnd.random(), rnd.random()),
+            "velocity": (rnd.randint(-100, 100)/10, rnd.randint(-100, 100)/10),
+            "acceleration": ((rnd.randint(-100, 100)/100, rnd.randint(-100, 100)/100)),
+            "rotational_velocity": rnd.random(),
+            "rotational_acceleration": rnd.random()
+        }
+        node = partsy.ParticleNode(last_node=last_node)
+        last_node.next_node = node
 
-    particle = partsy.Particle(pygame.Vector2(200, 100), scale=[0.5, 0.5], velocity=pygame.Vector2(200, 100), acceleration=(0, 9.8))
-    particle.position.x = 10
-    print(f"particle position: {particle.position}")
-    print(f"particle scale: {particle.scale}")
-    print(f"particle velocity: {particle.velocity}")
-    print(f"particle.acceleration: {particle.acceleration}")
+        last_node.particle = particle=partsy.Particle(**particle_setup)
+
+        last_node = node
+
+    current_node: partsy.ParticleNode = last_node
+    for i in range(4):
+        print_particle(current_node.particle)
+        if current_node.last_node is not None:
+            current_node = current_node.last_node
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
