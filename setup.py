@@ -2,7 +2,7 @@ from setuptools import setup, Extension
 
 module = Extension(
     'partsy',
-    sources=['c_src/partsy.c', "c_src/particle.c", "c_src/particle_node.c"]
+    sources=['c_src/partsy.c', "c_src/particle.c", "c_src/particle_node.c", "c_src/particle_manager.c"]
 )
 
 setup(

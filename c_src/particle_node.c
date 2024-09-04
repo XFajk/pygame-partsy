@@ -1,13 +1,14 @@
 #include <Python.h>
 
 #include "include/partsy.h"
+#include "object.h"
 
 /*
     PARTICLE NODE METHODS/RELATED FUNCTIONS
 */
 static void
 ParticleNode_dealloc(ParticleNode *self);
-static PyObject*
+static ParticleNode*
 ParticleNode_new(PyTypeObject *type, PyObject *args, PyObject *kwargs);
 static int
 ParticleNode_init(ParticleNode *self, PyObject *args, PyObject *kwargs);
@@ -93,7 +94,7 @@ ParticleNode_dealloc(ParticleNode *self) {
     PS_DEALLOC_SELF(self);
 }
 
-static PyObject*
+static ParticleNode*
 ParticleNode_new(PyTypeObject *type, PyObject *args, PyObject *kwargs) {
 
     ParticleNode* self = PS_BASIC_ALLOC_SELF(type, ParticleNode*);
@@ -107,7 +108,7 @@ ParticleNode_new(PyTypeObject *type, PyObject *args, PyObject *kwargs) {
         self->nextNode = Py_None;
     }
 
-    return (PyObject *)self;
+    return self;
 }
 
 static int
@@ -190,7 +191,7 @@ PyTypeObject ParticleNodeType = {
     .tp_itemsize = 0,
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
     .tp_doc = "partsy.ParticleNode is a class that represents a Node in the particle system it self",
-    .tp_new = ParticleNode_new,
+    .tp_new = (newfunc)ParticleNode_new,
     .tp_init = (initproc)ParticleNode_init,
     .tp_dealloc = (destructor)ParticleNode_dealloc,
     .tp_getset = ParticleNode_getsetters,

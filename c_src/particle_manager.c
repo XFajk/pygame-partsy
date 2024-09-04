@@ -1,6 +1,7 @@
 #include <Python.h>
 
 #include "include/partsy.h"
+#include "object.h"
 
 /*
     PARTICLE MANAGER METHODS/RELATED FUNCTIONS
@@ -16,5 +17,5 @@ ParticleManager_dealloc(ParticleManager *self) {
         Py_XDECREF(current); // deletion of the Node or if the node is owned somewhere else just a decrese of a refrence
         current = next; // borrow
     }
-    DEALLOC_SELF(self);
+    PS_DEALLOC_SELF(self);
 }

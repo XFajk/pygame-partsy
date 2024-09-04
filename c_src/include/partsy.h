@@ -65,4 +65,6 @@ typedef struct {
 
 extern PyTypeObject ParticleManagerType;
 
+#define ParticleManager_Check(ob) PyObject_TypeCheck(ob, &ParticleManagerType)
+
 #endif // PARTSY_H

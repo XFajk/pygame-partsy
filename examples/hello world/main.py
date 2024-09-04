@@ -40,12 +40,6 @@ def main() -> None:
             current_node = current_node.last_node
 
 
-
-
-
-
-
-
 if __name__ == "__main__":
     pygame.init()
     main()

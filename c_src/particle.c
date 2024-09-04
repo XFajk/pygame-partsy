@@ -1,13 +1,14 @@
 #include <Python.h>
 
 #include "include/partsy.h"
+#include "object.h"
 
 /*
     PARTICLE METHODS/RELATED FUNCTIONS
 */
 static void
 Particle_dealloc(Particle *self);
-static PyObject*
+static Particle*
 Particle_new(PyTypeObject *type, PyObject *args, PyObject *kwargs);
 static int
 Particle_init(Particle *self, PyObject *args, PyObject *kwargs);
@@ -175,7 +176,7 @@ Particle_dealloc(Particle *self) {
     PS_DEALLOC_SELF(self);
 }
 
-static PyObject*
+static Particle*
 Particle_new(PyTypeObject *type, PyObject *args, PyObject *kwargs) {
 
     Particle* self = PS_BASIC_ALLOC_SELF(type, Particle*);
@@ -192,7 +193,7 @@ Particle_new(PyTypeObject *type, PyObject *args, PyObject *kwargs) {
         return NULL;
     }
 
-    return (PyObject *)self;
+    return self;
 
 }
 
@@ -309,7 +310,7 @@ PyTypeObject ParticleType = {
     .tp_itemsize = 0,
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
     .tp_doc = "partsy.Particle is a class that repsents a particle it holds everything that a particle should",
-    .tp_new = Particle_new,
+    .tp_new = (newfunc)Particle_new,
     .tp_init = (initproc)Particle_init,
     .tp_dealloc = (destructor)Particle_dealloc,
     .tp_members = Particle_members,
